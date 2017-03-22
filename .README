@@ -1,4 +1,36 @@
-This is the README file for Service Discovery framework
+=====================PROJECT GOALS=================
+This project is originally aimed at designing a Service Discovery solution based on Micro Service design architecture and understanding it’s behavior in a containerized deployment architecture and inflection points in behaviour and capabilities of design. The project spans from designing of service all the way to containerized deployment of the cluster.
+It also helps understanding the design behaviour of Micro service architecture.
+
+
+=====================COMPONENTS====================
+The project uses Service Discovery as design architecture and Docker as deployment environment and shell scripts for managing and orchestrating the cluster. 
+The project uses consul as service registry for running service instances and uses underlying docker’s capabilities for registering services with consul
+Docker-compose helps deploy the multi-container cluster and docker-swarm helps deploy the cluster in a multi node environment. 
+The services are written in python but can be built in any language and programming paradigm.
+
+
+====================DESIGN AND WORKING======================
+Discussed below in detail.
+
+
+=======================WAR STORIES===================
+Inflection point (design) : One of the inherent assumptions made as part of Micro-service architecture development is that it is reasonably easy for all developers to decide the logical split of functionalities of underlying features across services. But, since all developers do not tend to think exactly the same way, it would be harder to split the functionalities across services to have the least overhead of services interacting with each other for the whole system to come alive as a single ever-evolving entity. Microservice architecture seems to be slippery slope when it comes to effects of nitty gritty design aspects and a small mistake might not be visible years before it becomes hard to correct which can potentially damage the product in long term.
+
+Deployment environment (deployment) : Docker turns out to be a good containerization solution for services but only if the deployment is supposed to happen in a virtual environment. The cost to benefit ratio falls works in favour as long as the environment is virtualized with no knowledge of underlying hardware (except the SLA). but game completely changes the moment deployment has to be done in house as there containerization can take more (performance due to extra OS layers) than it can give(platform independence).
+
+To some extent Micro service architecture can be called SOA with some added design guidelines for building mutually independent services at the cost of more grey area added to the designing of each service. Which means that more responsibility comes to the shoulder of developers and a stringent control at architecture level is needed to keep the long term goal of the product alive. A loss of control at architect level could damage the long term of working together of the services together to form the ever evolving product. On the contrary, trying to maintain control at architect level will lead to more knowledge pillars leading to more dependence of strategy of product on specific people hence counteracting the original idea to de-centralise any knowledge pillars in the product. 
+
+
+=====================LEARNING CURVE=========================
+Microservice still seems to be no man's land with each new implementation seeking to make the best out of the design architecture but at the significant cost and some more so disturbing implicit assumptions which needs more clarity.
+Docker shows promising directional development signs. But, it still is not as evolved as the cluster support for containers stills is not par with other . However, any containerization solution competitor might be substituted for same.
+It is still hard to reason why and how micro service architecture can be developed but below points are good reference points to start reasoning for the same
+Inflection point in design : Splitting a single massive application in multiple smaller micro services provides scalability, reliability and higher up time of application at the cost of performance since native calls are substituted by RPC calls. Since, the losing end of the game, performance, is an implicit assumption that developers end up not realising early on in the design, it can potentially cause performance issues if not heeded correctly. Even though it should not be a factor considered against micro service architecture, but it still turns a out to be very important factor while considering performance of the system or application. Splitting the logical parts of application into separate micro service only makes sense as long as performance is not hugely impacted. But, finding a sweet spot between scalability and performance is slightly more tricky than it looks. This point in design can be considered as the inflection point and it is utmost important for the architecture to be closest to this point to have best results.
+Deployment Architecture : A lot of air has lately been flowing around support of AWS as deployment environment due to low cost and high availability. But, keeping this aside for a minute, deployment architecture of any product also depends on this factor. Containerising an application causes loss in performance due to extra OS layer added as part of container along with other neglected but relevant issues like security. However, this might still be a good idea given the environment in AWS is essentially a VM itself and with no knowledge of underlying hardware and the sharing of resources (except the SLA), it might be reasonable to keep services containerised to have portability. But, in case of an in-house deployment environment, it makes sense to use a configuration management solution like Chef, Kubernetes, etc as using container technology will only create an extra OS layer costing performance of application along with other container related issues. But, at the end of day, deployment architecture solely depends on the product management’s long term goal of the application.
+Continuous Deployment : Even though CD seems as trivial as creating a delivery pipeline, it does not work that easy. Especially when your service is based on schema dependent DB like MySQL. In a true distributed system, upgrading a single instance at a time can cause schema mis-match of objects across instances running on different build versions. The only way it can be handled is having an Http interface like REST interface. But, that comes with inherent performance degradation. However, it is still not a string point to not have CD, it still can cause scary production issues during deployment.
+Need for micro instances : To some extent, architecture of an application also depends on how the problem is viewed. A perfect example is Twitter core engine which after refactoring by a bunch of developers in a matter of few weeks and shifting design from OOPS to functional design using akka framework, showed 10X performance and at the same time, removing design complexities of handling threads. However, it depends on the problem statement as to which design suits best and what is the ultimate goal of the application. For OOPS based problems, a high level state objects needs to be maintained whereas, in case of a functional design, throughput of application matters the most.
+Threads Vs Actors : 
 
 
 ========================REQUIREMENTS=========================
@@ -9,7 +41,6 @@ This is the README file for Service Discovery framework
 5. pip install kafka-python
 
 
-
 ========================Building Kafka and Zookeeper images===========
 1. Move to ./resources directory (this is context of build for docker image)
 2. Copy a deployment(/binaries) of kafka to ./package/<here>
@@ -17,11 +48,9 @@ This is the README file for Service Discovery framework
 4. Run using command "docker run -i -t bhavneshgugnani/<zookeeper|kafka>"
 
 
-
 ====================Building Tweet Producer and Consumer images==========
 1. Move to ./tweet-service/<producer|consumer> directory (this is context of build for docker image)
 2. Execute "docker build -f <Producer/Consumer>Dockerfile -t bhavneshgugnani/<producer|consumer> ."
-
 
 
 ==========================Linking containers============================
@@ -32,7 +61,6 @@ This is the README file for Service Discovery framework
 
 
 ================================REST APIs===============================
-
 Examples:
 http://<URL>:5000/user/twitter
 http://<URL>:5000/text/uselections
