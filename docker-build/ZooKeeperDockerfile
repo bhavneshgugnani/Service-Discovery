@@ -1,0 +1,14 @@
+# need java for running zookeeper
+FROM java
+MAINTAINER Zookeeper by Bhavnesh and Yogesh <bhavnesh.gugnani@gmail.com, patyogesh@gmail.com>
+# make base directory
+RUN mkdir /usr/bin/zookeeper
+# copy all zookeeper binaries from latest kafka package
+COPY ./resources/package/kafka* /usr/bin/zookeeper/
+# copy custom configs to config folder of kafka package
+COPY ./resources/zookeeper/configs /usr/bin/zookeeper/config/
+# expose some default ports (bad design to hardcode here)
+EXPOSE 2181:2181
+# start zookeeper server
+WORKDIR /usr/bin/zookeeper/
+CMD ["bin/zookeeper-server-start.sh", "config/zookeeper.properties"]

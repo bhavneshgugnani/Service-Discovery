@@ -1,0 +1,48 @@
+#project_name : ServiceDiscovery
+version : '2'
+
+services :
+  zookeeper :
+    image : bhavneshgugnani/zookeeper:latest
+
+  broker :
+    image : bhavneshgugnani/broker:latest
+    depends_on :
+      - zookeeper
+    links :
+      - zookeeper
+    entrypoint : ./wait-for-it.sh zookeeper:2181 -- bin/kafka-server-start.sh config/server.properties
+
+  mongodb :
+    image : bhavneshgugnani/mongo:latest
+    entrypoint : /usr/bin/mongod --dbpath ${DB_PATH}
+    environment :
+      - DB_PATH=${DB_PATH}
+    volumes :
+      - ${DB_PATH}:${DB_PATH}
+
+  orchestrator :
+    image : bhavneshgugnani/orchestrator:latest
+    links :
+      - mongodb
+    depends_on :
+      - mongodb
+    entrypoint : ./wait-for-it.sh broker:9092 -- python /usr/bin/orchestrator/server.py
+
+#  producer :
+#    image : bhavneshgugnani/producer:latest
+#    depends_on :
+#      - broker
+#      - mongodb
+#    links :
+#      - broker
+#      - mongodb
+#    entrypoint : ./wait-for-it.sh broker:9092 -- ./wait-for-it.sh mongodb:27017 -- python TweetProducer.py
+
+  consumer :
+    image : bhavneshgugnani/consumer:latest
+    depends_on :
+      - broker
+    links :
+      - broker
+    entrypoint : ./wait-for-it.sh broker:9092 -- python TweetConsumer.py broker 9092 Trump

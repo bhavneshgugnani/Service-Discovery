@@ -1,0 +1,8 @@
+FROM python:2.7.12
+MAINTAINER Tweet Service by Yogesh and Bhavnesh <patyogesh@gmail.com, bhavnesh.gugnani@gmail.com>
+RUN pip install flask && pip install pymongo && pip install enum34 && mkdir /usr/bin/orchestrator
+COPY ./tweet-service/orchestrator/src/server.py /usr/bin/orchestrator
+COPY ./resources/wait-for-it.sh /usr/bin/orchestrator
+EXPOSE 5000
+WORKDIR /usr/bin/orchestrator
+CMD ["python", "server.py"]

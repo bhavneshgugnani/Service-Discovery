@@ -1,0 +1,8 @@
+FROM python:2.7.12
+MAINTAINER Tweet Service by Yogesh and Bhavnesh <patyogesh@gmail.com, bhavnesh.gugnani@gmail.com>
+RUN pip install kafka-python && mkdir /usr/bin/TweetService
+COPY ./tweet-service/consumer/src/TweetConsumer.py /usr/bin/TweetService
+# copy wait-for-it.sh for docker-compose to work directory of container
+COPY ./resources/wait-for-it.sh /usr/bin/TweetService
+WORKDIR /usr/bin/TweetService/
+CMD ["python", "TweetConsumer.py", "broker", "9092", "Trump"]

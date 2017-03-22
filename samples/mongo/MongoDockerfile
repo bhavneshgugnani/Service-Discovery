@@ -1,0 +1,4 @@
+FROM mongo
+EXPOSE 27017
+COPY mongo-entrypoint.sh /
+ENTRYPOINT ["/mongo-entrypoint.sh"]

@@ -1,0 +1,11 @@
+FROM python:2.7.12
+MAINTAINER Tweet Service by Yogesh and Bhavnesh <patyogesh@gmail.com, bhavnesh.gugnani@gmail.com>
+RUN pip install kafka-python && pip install pymongo && mkdir /usr/bin/TweetService && mkdir /usr/bin/TweetService/resources
+COPY ./tweet-service/producer/src/TweetProducer.py /usr/bin/TweetService
+COPY ./tweet-service/producer/resources /usr/bin/TweetService/resources/
+# copy wait-for-it.sh for docker-compose to work directory of container
+COPY ./resources/wait-for-it.sh /usr/bin/TweetService
+WORKDIR /usr/bin/TweetService/resources/tweepy-master
+RUN python setup.py install
+WORKDIR /usr/bin/TweetService
+CMD ["python", "TweetProducer.py"]

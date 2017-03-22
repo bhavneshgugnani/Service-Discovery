@@ -1,0 +1,45 @@
+#project_name : ServiceDiscovery
+version : '2'
+services :
+  zookeeper :
+    build :
+      context : .
+      dockerfile : ./docker-build/ZooKeeperDockerfile
+    container_name : zookeeper
+    hostname : zookeeper
+  
+  broker :
+    build :
+      context : .
+      dockerfile : ./docker-build/KafkaDockerfile
+    container_name : broker
+    hostname : broker
+    depends_on : 
+      - zookeeper
+    links :
+      - zookeeper
+    entrypoint : ./wait-for-it.sh zookeeper:2181
+
+  producer :
+    build :
+      context : .
+      dockerfile : ./docker-build/ProducerDockerfile
+    container_name : producer
+    hostname : producer
+    depends_on :
+      - broker
+    links :
+      - broker
+    entrypoint : ./wait-for-it.sh broker:9092
+
+  consumer :
+    build :
+      context : .
+      dockerfile : ./docker-build/ConsumerDockerfile
+    container_name : consumer
+    hostname : consumer
+    depends_on :
+      - broker
+    links :
+      - broker
+    entrypoint : ./wait-for-it.sh broker:9092

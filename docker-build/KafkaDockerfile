@@ -1,0 +1,18 @@
+# need java for running kafka broker
+FROM java
+MAINTAINER Kafka by Bhavnesh and Yogesh <bhavnesh.gugnani@gmail.com, patyogesh@gmail.com>
+# make base directory
+RUN mkdir /usr/bin/kafka
+# copy all kafka binaries from latest kafka package
+COPY ./resources/package/kafka* /usr/bin/kafka/
+# copy custom configs to kafka binary package
+COPY ./resources/kafka/configs /usr/bin/kafka/config/
+# copy wait-for-it.sh for docker-compose to work directory of container
+COPY ./resources/wait-for-it.sh /usr/bin/kafka
+# expose some default ports (bad design to hardcode here)
+EXPOSE 9092:9092
+EXPOSE 9093:9093
+EXPOSE 9094:9094
+# start kafka broker
+WORKDIR /usr/bin/kafka/
+CMD ["bin/kafka-server-start.sh", "config/server.properties"]
